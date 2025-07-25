@@ -15,27 +15,69 @@ datasource db {
 }
 
 model User {
-  id Int @id @default(autoincrement())
+  userId Int @id @default(autoincrement())
   email String @unique
   password String
 }
 
-model Employee{
-  id Int @id @default(autoincrement())
+model Employees{
+  employeeId Int @id @default(autoincrement())
   firstName String
   lastName String
-  hoursWorked Float
-  overtime Float
-  hourlyRate Float
-  overtimeRate Float
-  waiters Waiter[]
+  isActive Boolean
+  shift Shifts[]
+  tip Tips[]
+  payroll Payrolls[]
+
+  roleId Int
+  role Roles @relation(fields: [roleId], references: [id])
 }
 
-model Waiter {
+model Roles{
   id Int @id @default(autoincrement())
-  prevSections String? // can be null
-  tips Float
-  waiterid Int
-  server Employee @relation(fields: [waiterid], references: [id])
+  roleName String @unique
+  Salary Float
+  hourlyRate Float
+  overTimeRate Float
 
+  employee Employees[]
+}
+
+model Shifts{
+  id Int @id @default(autoincrement())
+  workerId Int
+  worker Employees @relation(fields: [workerId], references: [employeeId])
+  date DateTime @db.Date
+  clockInTime DateTime @db.Time()
+  clockOutTime DateTime @db.Time()
+  breaksTaken Float
+  hoursWorked Float
+
+  tip Tips[]
+  
+}
+
+model Tips{
+  tipId Int @id @default(autoincrement())
+  workerId Int
+  worker Employees @relation(fields: [workerId], references: [employeeId])
+  shiftId Int
+  shift Shifts @relation(fields: [shiftId],references: [id])
+
+  tipAmount Float
+  paidInCashAmount Float //tips paid in cash
+  totalTips Float // = tipAmount - paidInCash
+}
+
+model Payrolls{
+  payrollId Int @id @default(autoincrement())
+  workerId Int
+  worker Employees @relation(fields: [workerId], references: [employeeId])
+  startDate DateTime @db.Date
+  endDate DateTime @db.Date
+  totalHours Float
+  overTime Float
+  totalHourlyPay Float
+  totalTips Float
+  netPay Float
 }
