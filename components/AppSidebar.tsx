@@ -16,26 +16,26 @@ import Link from "next/link";
 const navItems = [
   {
     title: "Employees",
-    url: "/employees",
+    url: "./Employee",
     icon: Users,
   },
   {
     title: "Sections",
-    url: "/sections",
+    url: "./Sections",
     icon: LayoutGrid,
   },
   {
     title: "Schedule",
-    url: "/schedule",
+    url: "./Schedule",
     icon: CalendarDays,
   },
   {
     title: "Settings",
-    url: "/settings",
+    url: "./Settings",
     icon: Settings,
   },
 ];
-import { logo } from "../public/logo.png"; // Adjust the path as necessary
+import { logo } from "*.png"; // Adjust the path as necessary
 import Image from "next/image";
 
 const AppSidebar = () => {
