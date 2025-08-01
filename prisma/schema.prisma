@@ -6,7 +6,6 @@
 
 generator client {
   provider = "prisma-client-js"
-  output   = "../app/generated/prisma"
 }
 
 datasource db {
@@ -24,24 +23,16 @@ model Employees{
   employeeId Int @id @default(autoincrement())
   firstName String
   lastName String
+  roleName String
+  hourlyRate Float
+  overTimeRate Float
   isActive Boolean
   shift Shifts[]
   tip Tips[]
   payroll Payrolls[]
 
-  roleId Int
-  role Roles @relation(fields: [roleId], references: [id])
 }
 
-model Roles{
-  id Int @id @default(autoincrement())
-  roleName String @unique
-  Salary Float
-  hourlyRate Float
-  overTimeRate Float
-
-  employee Employees[]
-}
 
 model Shifts{
   id Int @id @default(autoincrement())
