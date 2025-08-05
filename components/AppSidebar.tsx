@@ -16,22 +16,22 @@ import Link from "next/link";
 const navItems = [
   {
     title: "Employees",
-    url: "./Employee",
+    url: "/Employee",
     icon: Users,
   },
   {
     title: "Sections",
-    url: "./Sections",
+    url: "/Sections",
     icon: LayoutGrid,
   },
   {
     title: "Schedule",
-    url: "./Schedule",
+    url: "/Schedule",
     icon: CalendarDays,
   },
   {
     title: "Settings",
-    url: "./Settings",
+    url: "/Settings",
     icon: Settings,
   },
 ];

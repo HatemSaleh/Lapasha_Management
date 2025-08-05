@@ -19,6 +19,9 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { Input } from "@/components/ui/input"
+import { Button } from "./ui/button"
+
+import Link  from "next/link"
 
 
 interface DataTableProps<TData, TValue> {
@@ -26,10 +29,8 @@ interface DataTableProps<TData, TValue> {
   data: TData[]
 }
 
-export function DataTable<TData, TValue>({
-  columns,
-  data,
-}: DataTableProps<TData, TValue>) {
+export function DataTable<TData, TValue>({columns,data,}: DataTableProps<TData, TValue>) {
+
     const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
         []
       )
@@ -68,6 +69,12 @@ export function DataTable<TData, TValue>({
                 }
                 className="max-w-sm"
             />
+            
+            <Button variant="outline" asChild>
+            <Link href="/Employee/New-employee">ADD EMPLOYEE</Link>
+            </Button>
+            
+
         </div>
         <div className="w-full h-[500px] flex flex-col gap-4 ">
             <div className="overflow-auto rounded-md border flex flex-2/3 flex-col">
