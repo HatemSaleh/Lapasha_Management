@@ -1,10 +1,10 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { useRouter } from "next/navigation"
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function NewEmployeeForm() {
-  const router = useRouter()
+  const router = useRouter();
 
   const [formData, setFormData] = useState({
     firstName: "",
@@ -12,18 +12,20 @@ export default function NewEmployeeForm() {
     roleName: "waiter",
     hourlyRate: "",
     overTimeRate: "",
-  })
+  });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    const { name, value } = e.target
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
+    const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
       [name]: value,
-    }))
-  }
+    }));
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
 
     const res = await fetch("/api/employee", {
       method: "POST",
@@ -35,14 +37,14 @@ export default function NewEmployeeForm() {
         hourlyRate: parseFloat(formData.hourlyRate),
         overTimeRate: parseFloat(formData.overTimeRate),
       }),
-    })
+    });
 
     if (res.ok) {
-      router.push("/Employee")
+      router.push("/Employee");
     } else {
-      alert("Failed to create employee")
+      alert("Failed to create employee");
     }
-  }
+  };
 
   return (
     <form onSubmit={handleSubmit} className="max-w-md mx-auto mt-10 space-y-4">
@@ -98,9 +100,12 @@ export default function NewEmployeeForm() {
         required
       />
 
-      <button type="submit" className="px-4 py-2 bg-blue-600 text-white rounded">
+      <button
+        type="submit"
+        className="px-4 py-2 bg-blue-600 text-white rounded"
+      >
         Add Employee
       </button>
     </form>
-  )
+  );
 }
