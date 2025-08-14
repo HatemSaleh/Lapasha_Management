@@ -1,7 +1,7 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { ColumnDef } from "@tanstack/react-table";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 
 import { MoreHorizontal } from "lucide-react";
@@ -30,32 +30,12 @@ export type Employees = {
   employeeId: number;
   name: string;
   roleName: "waiter" | "bartender" | "hookah" | "kitchen";
+  phoneNumber: string;
   hourlyRate: number;
   overtimeRate: number;
 };
 
 export const columns: ColumnDef<Employees>[] = [
-  {
-    id: "select",
-    header: ({ table }) => (
-      <Checkbox
-        checked={
-          table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && "indeterminate")
-        }
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
-      />
-    ),
-    cell: ({ row }) => (
-      <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Select row"
-      />
-    ),
-  },
-
   {
     accessorKey: "name",
     header: "Name",
@@ -63,6 +43,11 @@ export const columns: ColumnDef<Employees>[] = [
   {
     accessorKey: "roleName",
     header: "Role",
+  },
+
+  {
+    accessorKey: "phoneNumber",
+    header: "Phone Number",
   },
   {
     accessorKey: "hourlyRate",
@@ -95,21 +80,20 @@ export const columns: ColumnDef<Employees>[] = [
     id: "actions",
     cell: ({ row }) => {
       const employee = row.original;
-
+      const router = useRouter();
       const handleDelete = async (employeeId: number) => {
         try {
-          const res = await fetch(`/api/employee/${employeeId}`, {
+          const res = await fetch(`/api/employee/${employee.employeeId}`, {
             method: "DELETE",
           });
 
           if (!res.ok) {
-            throw new Error(`Failed to delete employee with ID ${employeeId}`);
+            const errorText = await res.text();
+            throw new Error(`Failed to delete employee: ${errorText}`);
           }
-
-          console.log(`Deleted employee with ID ${employeeId}`);
-          // You can trigger a table refresh or re-fetch here if needed
+          router.refresh();
         } catch (error) {
-          console.error("Error deleting employee:", error);
+          alert(`Could not delete ${employee.name}. Please try again.`);
         }
       };
 
