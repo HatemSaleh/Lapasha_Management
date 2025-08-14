@@ -9,6 +9,7 @@ async function getData(): Promise<Employees[]> {
     employeeId: emp.employeeId,
     name: `${emp.firstName} ${emp.lastName}`,
     roleName: emp.roleName as Employees["roleName"],
+    phoneNumber: emp.phoneNumber,
     hourlyRate: emp.hourlyRate,
     overtimeRate: emp.overTimeRate,
   }));

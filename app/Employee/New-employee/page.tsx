@@ -9,9 +9,10 @@ export default function NewEmployeeForm() {
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
-    roleName: "waiter",
+    roleName: "",
     hourlyRate: "",
     overTimeRate: "",
+    phoneNumber: "",
   });
 
   const handleChange = (
@@ -39,10 +40,11 @@ export default function NewEmployeeForm() {
       }),
     });
 
+    const data = await res.json();
     if (res.ok) {
       router.push("/Employee");
     } else {
-      alert("Failed to create employee");
+      alert(data.error || "Failed to create employee");
     }
   };
 
@@ -73,12 +75,26 @@ export default function NewEmployeeForm() {
         value={formData.roleName}
         onChange={handleChange}
         className="w-full p-2 border rounded"
+        required
       >
+        <option value="">Select role</option>
         <option value="waiter">Waiter</option>
         <option value="bartender">Bartender</option>
         <option value="hookah">Hookah</option>
         <option value="kitchen">Kitchen</option>
       </select>
+
+      <input
+        name="phoneNumber"
+        type="tel"
+        maxLength={10}
+        pattern="\d{10}"
+        value={formData.phoneNumber}
+        onChange={handleChange}
+        placeholder="Phone Number"
+        className="w-full p-2 border rounded"
+        required
+      />
 
       <input
         name="hourlyRate"
@@ -102,7 +118,7 @@ export default function NewEmployeeForm() {
 
       <button
         type="submit"
-        className="px-4 py-2 bg-blue-600 text-white rounded"
+        className="px-4 py-2 bg-blue-600 text-white rounded cursor-pointer active:bg-blue-700"
       >
         Add Employee
       </button>

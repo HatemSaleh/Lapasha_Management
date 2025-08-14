@@ -21,6 +21,7 @@ model User {
 
 model Employees{
   employeeId Int @id @default(autoincrement())
+  phoneNumber String @unique @db.VarChar(10)
   firstName String
   lastName String
   roleName String
