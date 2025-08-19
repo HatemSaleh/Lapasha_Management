@@ -7,7 +7,8 @@ async function getData(): Promise<Employees[]> {
 
   return dbEmployees.map((emp) => ({
     employeeId: emp.employeeId,
-    name: `${emp.firstName} ${emp.lastName}`,
+    firstName: emp.firstName,
+    lastName: emp.lastName,
     roleName: emp.roleName as Employees["roleName"],
     phoneNumber: emp.phoneNumber,
     hourlyRate: emp.hourlyRate,

@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { ColumnDef } from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
-
+import { EditEmployeeForm } from "@/components/EditEmployeeForm";
 import { MoreHorizontal } from "lucide-react";
 import {
   DropdownMenu,
@@ -28,17 +28,25 @@ import {
 
 export type Employees = {
   employeeId: number;
-  name: string;
+  firstName: string;
+  lastName: string;
   roleName: "waiter" | "bartender" | "hookah" | "kitchen";
   phoneNumber: string;
   hourlyRate: number;
   overtimeRate: number;
 };
-
 export const columns: ColumnDef<Employees>[] = [
   {
-    accessorKey: "name",
+    id: "name",
     header: "Name",
+    cell: ({ row }) => {
+      const employee = row.original;
+      return (
+        <div>
+          {employee.firstName} {employee.lastName}
+        </div>
+      );
+    },
   },
   {
     accessorKey: "roleName",
@@ -81,7 +89,7 @@ export const columns: ColumnDef<Employees>[] = [
     cell: ({ row }) => {
       const employee = row.original;
       const router = useRouter();
-      const handleDelete = async (employeeId: number) => {
+      const handleDelete = async () => {
         try {
           const res = await fetch(`/api/employee/${employee.employeeId}`, {
             method: "DELETE",
@@ -93,7 +101,24 @@ export const columns: ColumnDef<Employees>[] = [
           }
           router.refresh();
         } catch (error) {
-          alert(`Could not delete ${employee.name}. Please try again.`);
+          alert(
+            `Could not delete '${employee.firstName} ${employee.lastName}'. Please try again.`
+          );
+        }
+      };
+
+      const handleEdit = async (updated: any) => {
+        try {
+          const res = await fetch(`/api/employee/${employee.employeeId}`, {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(updated),
+          });
+          if (!res.ok) throw new Error("Failed to update employee");
+          router.refresh();
+        } catch (err) {
+          alert("Failed to update employee. Please try again.");
+          console.error(err);
         }
       };
 
@@ -107,9 +132,17 @@ export const columns: ColumnDef<Employees>[] = [
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuLabel>{employee.name}</DropdownMenuLabel>
+              <DropdownMenuLabel>
+                {employee.firstName} {employee.lastName}
+              </DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>Edit</DropdownMenuItem>
+
+              <DropdownMenuItem asChild>
+                <EditEmployeeForm
+                  employee={employee}
+                  onSave={(updated) => handleEdit(updated)}
+                />
+              </DropdownMenuItem>
 
               <AlertDialogTrigger asChild>
                 <DropdownMenuItem className="text-red-600">
@@ -122,7 +155,7 @@ export const columns: ColumnDef<Employees>[] = [
           <AlertDialogContent>
             <AlertDialogHeader>
               <AlertDialogTitle>
-                Delete employee {employee.name}?
+                Delete employee {employee.firstName} {employee.lastName}?
               </AlertDialogTitle>
               <AlertDialogDescription>
                 This action cannot be undone. It will permanently delete this
@@ -133,7 +166,7 @@ export const columns: ColumnDef<Employees>[] = [
               <AlertDialogCancel>Cancel</AlertDialogCancel>
               <AlertDialogAction
                 className="bg-red-600 hover:bg-red-700"
-                onClick={() => handleDelete(employee.employeeId)}
+                onClick={() => handleDelete()}
               >
                 Confirm Delete
               </AlertDialogAction>

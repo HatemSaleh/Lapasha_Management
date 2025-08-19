@@ -1,14 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 
-// Prevent multiple Prisma instances during dev
 declare global {
   var prisma: PrismaClient | undefined;
 }
 const prisma = global.prisma || new PrismaClient();
 if (process.env.NODE_ENV !== "production") global.prisma = prisma;
 
-// Proper async function with context param
 export async function DELETE(
   req: NextRequest,
   context: { params: { id: string } }
@@ -38,6 +36,35 @@ export async function DELETE(
   } catch (error: any) {
     return NextResponse.json(
       { error: "Could not delete employee" },
+      { status: 500 }
+    );
+  }
+}
+
+export async function PATCH(
+  req: NextRequest,
+  context: { params: { id: string } }
+) {
+  const { id } = await context.params; //params needs to be awaited before you access its props.
+  const employeeId = parseInt(id);
+  const body = await req.json();
+  try {
+    const updatedEmployee = await prisma.employees.update({
+      where: { employeeId },
+      data: {
+        firstName: body.firstName,
+        lastName: body.lastName,
+        phoneNumber: body.phoneNumber,
+        hourlyRate: parseFloat(body.hourlyRate),
+        overTimeRate: parseFloat(body.overtimeRate),
+      },
+    });
+
+    return NextResponse.json(updatedEmployee);
+  } catch (error) {
+    console.error(error);
+    return NextResponse.json(
+      { error: "Failed to update employee" },
       { status: 500 }
     );
   }
