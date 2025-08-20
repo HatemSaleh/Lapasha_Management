@@ -2,13 +2,11 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
-  DialogClose,
   DialogContent,
   DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -17,6 +15,8 @@ import { Label } from "@/components/ui/label";
 export function EditEmployeeForm({
   employee,
   onSave,
+  open, // ⬅️ added
+  setOpen,
 }: {
   employee: {
     firstName: string;
@@ -27,6 +27,8 @@ export function EditEmployeeForm({
     overtimeRate: number;
   };
   onSave?: (updatedEmployee: typeof employee) => void;
+  open: boolean; // ⬅️ new
+  setOpen: (value: boolean) => void;
 }) {
   const [formData, setFormData] = useState({ ...employee });
 
@@ -38,14 +40,11 @@ export function EditEmployeeForm({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (onSave) onSave(formData);
+    setOpen(false);
   };
 
   return (
-    <Dialog>
-      <DialogTrigger asChild>
-        <Button variant="outline">Edit</Button>
-      </DialogTrigger>
-
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent className="sm:max-w-[500px]">
         <form onSubmit={handleSubmit} className="space-y-6">
           <DialogHeader>
@@ -114,12 +113,14 @@ export function EditEmployeeForm({
           </div>
 
           <DialogFooter>
-            <DialogClose asChild>
-              <Button variant="outline">Cancel</Button>
-            </DialogClose>
-            <DialogClose asChild>
-              <Button type="submit">Save changes</Button>
-            </DialogClose>
+            <Button
+              variant="outline"
+              type="button"
+              onClick={() => setOpen(false)}
+            >
+              Cancel
+            </Button>
+            <Button type="submit">Save changes</Button>
           </DialogFooter>
         </form>
       </DialogContent>
